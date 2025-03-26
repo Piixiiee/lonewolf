@@ -23,14 +23,14 @@ public class App
             return;
         }
 
-        Window window = new Window();
-        window.open(new Observer() {
+        Window.getInstance().open(new Observer() {
             @Override
             public void update(Observable o, Object arg) {
-                window.clear();
-                window.drawImage(10, 10, 150, 150, image);
-                window.drawRect(100, 100, 200, 100, new Color(0, 255, 120, 255));
-                window.write(100, 150, "Welcome to the secret shop!", Color.black);
+                Window.getInstance().clear();
+                Window.getInstance().drawImage(10, 10, 150, 150, image);
+                Window.getInstance().drawRect(100, 100, 200, 100, new Color(0, 255, 120, 255));
+                Window.getInstance().write(100, 150, Window.getInstance().getMousePosition().toString(), Color.black);
+                Window.getInstance().write(100, 200, Window.getInstance().isLeftMouseDown() ? "true" : "false", Color.black);
             }
         });
     }

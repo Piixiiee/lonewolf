@@ -4,6 +4,9 @@ import java.awt.*;
 import java.awt.RenderingHints.Key;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
@@ -12,6 +15,8 @@ import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class Window {
+    public static Window getInstance() { return instance; }
+
     public void open(Observer callback) {
     
         updateCallback = callback;
@@ -36,7 +41,6 @@ public class Window {
                 ((Graphics2D)g).setTransform(transform);
 
                 ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-                // graphics.setTransform(transform);
 
                 updateCallback.update(null, null);
 
@@ -78,15 +82,56 @@ public class Window {
                     ratio = (float)(windowSize.getHeight() / canvasSize.getHeight());
                 }
 
-                canvasPosition.setSize(
-                    (windowSize.getWidth() - canvasSize.getWidth() * ratio) / 2, 
-                    (windowSize.getHeight() - canvasSize.getHeight() * ratio) / 2);
+                canvasPosition.x = (int)(windowSize.getWidth() - canvasSize.getWidth() * ratio) / 2; 
+                canvasPosition.y =   (int)(windowSize.getHeight() - canvasSize.getHeight() * ratio) / 2;
             }
 
             @Override
             public void componentShown(ComponentEvent e) {
             }
             
+        });
+
+        handle.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+            
+            @Override
+            public void mousePressed(MouseEvent e) {
+                int btnNum = e.getButton();
+                if (btnNum == 1)
+                    leftMouseDown = true;
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                int btnNum = e.getButton();
+                if (btnNum == 1)
+                    leftMouseDown = false;
+            }
+        });
+
+        
+        handle.addMouseMotionListener(new MouseMotionListener() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                mouseMoved(e);
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                mousePosition.x = (int)(e.getX() / ratio - canvasPosition.x);
+                mousePosition.y = (int)(e.getY() / ratio - canvasPosition.y);
+            }
         });
 
         handle.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -136,18 +181,25 @@ public class Window {
 
     private void setTransform() {
         transform.setToIdentity();
-        transform.translate(canvasPosition.getWidth(), canvasPosition.getHeight());
+        transform.translate(canvasPosition.x, canvasPosition.y);
         transform.scale(ratio, ratio);
     }
 
-    JFrame handle;
-    BufferedImage canvas;
+    public Point getMousePosition() { return mousePosition; }
+
+    public boolean isLeftMouseDown() { return leftMouseDown; }
+
+    private JFrame handle;
+    private BufferedImage canvas;
     // JPanel canvas;
-    Graphics2D graphics;
-    Dimension windowSize;
-    Dimension canvasSize;
-    Dimension canvasPosition = new Dimension();
-    float ratio = 1.0f;
-    Observer updateCallback;
-    AffineTransform transform = new AffineTransform();
+    private Graphics2D graphics;
+    private Dimension windowSize;
+    private Dimension canvasSize;
+    private Point canvasPosition = new Point();
+    private float ratio = 1.0f;
+    private Observer updateCallback;
+    private AffineTransform transform = new AffineTransform();
+    private Point mousePosition = new Point();
+    private boolean leftMouseDown = false;
+    private static Window instance = new Window();
 }
