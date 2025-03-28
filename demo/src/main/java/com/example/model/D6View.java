@@ -14,8 +14,11 @@ public class D6View implements Drawable, Updateable {
     @Override
     public void draw() {
         Window.getInstance().drawImage(
-            (int)posX, (int)posY, 50, 50, 
-            currentSpriteRect.x, currentSpriteRect.y, currentSpriteRect.width, currentSpriteRect.height, 
+            (int)posX, (int)posY, (int)(50 * currentSize), (int)(50 * currentSize), 
+            currentSpriteRect.x, 
+            currentSpriteRect.y, 
+            currentSpriteRect.width, 
+            currentSpriteRect.height, 
             spriteSheet);
     }
 
@@ -36,11 +39,17 @@ public class D6View implements Drawable, Updateable {
                 rolling = false;
             }
 
-            posX = timer / endTime * 200 + (float)Math.sin(timer * 12) * 10;
-            posY = 200 - (float)Math.pow(timer / endTime, 2) * 200 + (float)Math.cos(timer * 17) * 10;
+            posX = timer / endTime * 200 + (float)Math.sin(timer * 2) * 3;
+            posY = 200 - (float)Math.pow(timer / endTime, 2) * 200 + (float)Math.cos(timer * 2) * 3;
 
             timer += TimeHandler.getDelta();
+            currentSize = calculateCurrentSize();
         }
+    }
+
+    private float calculateCurrentSize() {
+        float x = timer / endTime;
+        return 1 + Math.max(-15 * (x * x) + 1.0f, 0.0f) * 0.8f;
     }
 
     public void rollNumber(int number) {
@@ -68,13 +77,14 @@ public class D6View implements Drawable, Updateable {
     };
     private Rectangle currentSpriteRect = sprites[0];
 
-    private static final float switchInterval = 0.05f;
+    private static final float switchInterval = 0.025f;
     private float timer = 0.0f;
     private float nextSwitch = 0.0f;
-    private float endTime = 2f;
+    private float endTime = 1f;
     private boolean rolling = false;
     private boolean smudge = false;
     private int rolledNumber = 1;
     private float posX;
     private float posY; 
+    private float currentSize;
 }
