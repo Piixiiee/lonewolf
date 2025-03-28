@@ -1,7 +1,6 @@
 package com.example.graphics;
 
 import java.awt.*;
-import java.awt.RenderingHints.Key;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.MouseEvent;
@@ -166,16 +165,21 @@ public class Window {
     }
 
     public void drawImage(int x, int y, int width, int height, Image image) {
+        drawImage(x, y, width, height, 0, 0, image.getWidth(null), image.getHeight(null), image);
+    }
+
+    
+    public void drawImage(int x, int y, int width, int height, int srcX, int srcY, int srcEndX, int srcEndY, Image image) {
         graphics.drawImage(
             image, 
             x, 
             y,
             x + width,
             y + height,
-            0,
-            0,
-            image.getWidth(null),
-            image.getHeight(null), 
+            srcX,
+            srcY,
+            srcEndX,
+            srcEndY, 
             null);
     }
 
