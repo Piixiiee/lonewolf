@@ -1,6 +1,7 @@
 package com.example;
 
 import com.example.graphics.Window;
+import com.example.model.*;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -14,7 +15,10 @@ public class App
 {
     public static void main( String[] args )
     {
-        
+        for (int i = 0; i < 200; i++) {
+            System.out.println(Dice.rollPercentile());
+        }
+
         Image image; 
         try {
             image = ImageIO.read(App.class.getResourceAsStream("graphics/test_img.png"));
